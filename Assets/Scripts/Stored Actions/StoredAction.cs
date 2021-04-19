@@ -89,6 +89,7 @@ public class StoredActionMove : StoredAction
             {
                 if (Vector3.Distance(transform.position, target) > 0.1f && !_CheckProcessInputHasOverMinimumTime())
                 {
+                    //if (player.playerId == 0) Debug.Log(Time.deltaTime);
                     player.characterController.Move(localTarget * moveSpeed * Time.deltaTime + Vector3.down * gravitySpeed * Time.deltaTime);
                 }
                 else

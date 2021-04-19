@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
         m_phaseManager.SetPhase(PhaseEnum.WaitInput);
 
         Cursor.lockState = CursorLockMode.Locked; // kalo pause munculin cursor;
+        Application.targetFrameRate = 60;
     }
 
     private void Update()

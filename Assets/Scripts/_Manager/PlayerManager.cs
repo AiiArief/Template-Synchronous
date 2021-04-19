@@ -17,9 +17,9 @@ public class PlayerManager : MonoBehaviour
 
     public void SetupAllPlayersWaitInput()
     {
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
-            if(player.isPlayable)
+            if (player.isPlayable)
                 player.SetupWaitInput();
         }
     }
@@ -27,16 +27,16 @@ public class PlayerManager : MonoBehaviour
     public bool CheckAllPlayersHasDoneInput()
     {
         //panggil semua player buat liat input
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
-            if(player.isPlayable)
+            if (player.isPlayable && player.storedActions.Count == 0)
                 player.WaitInput();
         }
 
         // kalo semua udah ada stored action return true
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
-            if (player.isPlayable && player.storedActions.Count == 0) 
+            if (player.isPlayable && player.storedActions.Count == 0)
                 return false;
         }
 
@@ -58,16 +58,16 @@ public class PlayerManager : MonoBehaviour
         {
             if (player.isPlayable && !player.CheckAllActionHasDone())
             {
-                foreach(StoredAction storedAction in player.storedActions)
-                   if(!storedAction.actionHasDone) 
+                foreach (StoredAction storedAction in player.storedActions)
+                    if (!storedAction.actionHasDone)
                         storedAction.action.Invoke();
             }
         }
 
         // return true kalo semua udah selesai process
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
-            if (player.isPlayable && !player.CheckAllActionHasDone()) 
+            if (player.isPlayable && !player.CheckAllActionHasDone())
                 return false;
         }
 
@@ -94,7 +94,7 @@ public class PlayerManager : MonoBehaviour
         // return true kalo semua udah selesai after input
         foreach (Player player in players)
         {
-            if (player.isPlayable && !player.afterActionHasDone) 
+            if (player.isPlayable && !player.afterActionHasDone)
                 return false;
         }
 
@@ -119,9 +119,36 @@ public class PlayerManager : MonoBehaviour
     private void _SetPlayersIsActive(int playerCount)
     {
         for (int i = 0; i < playerCount; i++)
-            players[i].isPlayable = true;
+            players[i].SetIsPlayable(true);
 
         for (int i = playerCount; i < players.Count; i++)
-            players[i].isPlayable = false;
+            players[i].SetIsPlayable(false);
+
+        _SetupAllPlayersCamera(playerCount);
+    }
+
+    private void _SetupAllPlayersCamera(int playerCount)
+    {
+        switch(playerCount)
+        {
+            case 1:
+                players[0].playerCamera.rect = new Rect(0, 0, 1, 1);
+                break;
+            case 2:
+                players[0].playerCamera.rect = new Rect(0, 0, 0.5f, 1);
+                players[1].playerCamera.rect = new Rect(0.5f, 0, 0.5f, 1);
+                break;
+            case 3:
+                players[0].playerCamera.rect = new Rect(0, 0.5f, 1, 0.5f);
+                players[1].playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
+                players[2].playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
+                break;
+            case 4:
+                players[0].playerCamera.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
+                players[1].playerCamera.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                players[2].playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
+                players[3].playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
+                break;
+        }
     }
 }
