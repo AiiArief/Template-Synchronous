@@ -11,7 +11,7 @@ public class PhaseWaitInput : MonoBehaviour
         // check has stored from player, enemy, and level --> change phase
 
         bool playerManagerHasDoneInput = PlayerManager.Instance.CheckAllPlayersHasDoneInput();
-        bool enemyManagerHasDoneInput = true;
+        bool enemyManagerHasDoneInput = EnemyManager.Instance.CheckAllEnemiesHasDoneInput();
         bool levelManagerHasDoneInput = true;
 
         if(playerManagerHasDoneInput && enemyManagerHasDoneInput && levelManagerHasDoneInput)
@@ -22,8 +22,8 @@ public class PhaseWaitInput : MonoBehaviour
 
     private void OnEnable()
     {
-        // stored action semuanya null
         PlayerManager.Instance.SetupAllPlayersWaitInput();
+        EnemyManager.Instance.SetupAllEnemiesWaitInput();
 
     }
 }

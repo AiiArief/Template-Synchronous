@@ -27,13 +27,23 @@ public class StoredActionSkip : StoredAction
 
 public class StoredActionTurn : StoredAction
 {
-    public StoredActionTurn(Player player, Vector3 m_currentCameraRot)
+    public StoredActionTurn(Entity entity, float yDegree, bool isRepeatAngle = true)
+    {
+        action = () =>
+        {
+            Vector3 euler = new Vector3(0.0f, _ConvertTo90Degrees(yDegree, isRepeatAngle), 0.0f);
+            entity.transform.rotation = Quaternion.Euler(euler);
+            actionHasDone = true;
+        };
+    }
+
+    public StoredActionTurn(EntityPlayer player, Vector3 m_currentCameraRot)
     {
         action = () =>
         {
             Vector3 faceCameraDir = new Vector3(0.0f, _ConvertTo90Degrees(m_currentCameraRot.y), 0.0f);
             player.transform.rotation = Quaternion.Euler(faceCameraDir);
-            player.playerCamera.transform.parent.rotation = Quaternion.Euler(m_currentCameraRot);
+            player.playerCameraLook.transform.rotation = Quaternion.Euler(m_currentCameraRot);
             actionHasDone = true;
         };
     }
@@ -60,37 +70,36 @@ public class StoredActionTurn : StoredAction
 
 public class StoredActionMove : StoredAction
 {
-    public StoredActionMove(Player player)
+    public StoredActionMove(Entity entity)
     {
-        Vector3 m_posBeforeMove = player.transform.position;
-        float gravitySpeed = _CalcGravitySpeed(player.gravityPerTurn);
+        Vector3 m_posBeforeMove = entity.transform.position;
+        float gravitySpeed = _CalcGravitySpeed(entity.gravityPerTurn);
 
         action = () =>
         {
-            player.characterController.Move(Vector3.down * gravitySpeed * Time.deltaTime);
+            entity.characterController.Move(Vector3.down * gravitySpeed * Time.deltaTime);
             actionHasDone = _CheckProcessInputHasOverMinimumTime();
         };
     }
 
-    public StoredActionMove(Player player, Vector3 direction, float range = 1)
+    public StoredActionMove(Entity entity, Vector3 direction, float range = 1)
     {
-        Vector3 posBeforeMove = player.characterController.transform.position;
+        Vector3 posBeforeMove = entity.characterController.transform.position;
         float moveSpeed = 1.0f / PhaseManager.Instance.processInput.minimumTimeBeforeNextPhase;
-        float gravitySpeed = _CalcGravitySpeed(player.gravityPerTurn);
+        float gravitySpeed = _CalcGravitySpeed(entity.gravityPerTurn);
         bool hasCollided = false;
 
         action = () =>
         {
-            Transform transform = player.transform;
+            Transform transform = entity.transform;
             Vector3 localTarget = transform.right * direction.x * range + transform.forward * direction.z * range;
             Vector3 target = new Vector3(posBeforeMove.x + localTarget.x, transform.position.y, posBeforeMove.z + localTarget.z);
 
-            if (!_CheckCollisionInDirection(player.collisionChecker, direction) && !hasCollided)
+            if (!_CheckCollisionInDirection(entity.collisionChecker, direction) && !hasCollided)
             {
                 if (Vector3.Distance(transform.position, target) > 0.1f && !_CheckProcessInputHasOverMinimumTime())
                 {
-                    //if (player.playerId == 0) Debug.Log(Time.deltaTime);
-                    player.characterController.Move(localTarget * moveSpeed * Time.deltaTime + Vector3.down * gravitySpeed * Time.deltaTime);
+                    entity.characterController.Move(localTarget * moveSpeed * Time.deltaTime + Vector3.down * gravitySpeed * Time.deltaTime);
                 }
                 else
                 {
@@ -103,7 +112,7 @@ public class StoredActionMove : StoredAction
                 Vector3 newPosBeforeMove = new Vector3(posBeforeMove.x, transform.position.y, posBeforeMove.z);
                 if (Vector3.Distance(transform.position, newPosBeforeMove) > 0.1f)
                 {
-                    player.characterController.Move(-localTarget * moveSpeed * Time.deltaTime + Vector3.down * gravitySpeed * Time.deltaTime);
+                    entity.characterController.Move(-localTarget * moveSpeed * Time.deltaTime + Vector3.down * gravitySpeed * Time.deltaTime);
                 }
                 else
                 {
@@ -117,16 +126,16 @@ public class StoredActionMove : StoredAction
     private bool _CheckCollisionInDirection(CollisionChecker collisionChecker, Vector3 direction)
     {
         if (direction.z > 0.0f)
-            return collisionChecker.frontCollider.GetColliders().Count > 0.0f;
+            return collisionChecker.frontCollider.CheckColliderEntityUnpassable();
 
         if (direction.z < 0.0f)
-            return collisionChecker.backCollider.GetColliders().Count > 0.0f;
+            return collisionChecker.backCollider.CheckColliderEntityUnpassable();
 
         if (direction.x > 0.0f)
-            return collisionChecker.rightCollider.GetColliders().Count > 0.0f;
+            return collisionChecker.rightCollider.CheckColliderEntityUnpassable();
 
         if (direction.x < 0.0f)
-            return collisionChecker.leftCollider.GetColliders().Count > 0.0f;
+            return collisionChecker.leftCollider.CheckColliderEntityUnpassable();
 
         return false;
     }

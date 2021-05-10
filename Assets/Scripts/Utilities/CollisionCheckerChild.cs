@@ -4,17 +4,43 @@ using UnityEngine;
 
 public class CollisionCheckerChild : MonoBehaviour
 {
-    private List<Collider> colliders = new List<Collider>();
+    private HashSet<Collider> m_colliders = new HashSet<Collider>();
+    public HashSet<Collider> GetColliders() { return m_colliders; }
 
-    public List<Collider> GetColliders() { return colliders; }
+    public HashSet<T> GetCollidersWithFilter<T>()
+    {
+        HashSet<T> hashSet = new HashSet<T>();
+        foreach(Collider collider in m_colliders)
+        {
+            T t = collider.GetComponent<T>();
+            if(t != null)
+            {
+                hashSet.Add(t);
+            }
+        }
+        return hashSet;
+    }
+
+    public bool CheckColliderEntityUnpassable()
+    {
+        foreach(Collider collider in m_colliders)
+        {
+            if (!collider.isTrigger && collider.gameObject.isStatic)
+                return true;
+            if (collider.GetComponent<TagEntityUnpassable>() != null)
+                return true;
+        }
+
+        return false;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        colliders.Add(other);
+        m_colliders.Add(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        colliders.Remove(other);
+        m_colliders.Remove(other);
     }
 }

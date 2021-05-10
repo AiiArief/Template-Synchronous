@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     {
         // set cutscene, config all manager, idk
         m_playerManager.SetupPlayersOnLevelStart(1); // temp
+        m_enemyManager.SetupEnemiesOnLevelStart();
         m_phaseManager.SetPhase(PhaseEnum.WaitInput);
 
         Cursor.lockState = CursorLockMode.Locked; // kalo pause munculin cursor;

@@ -15,7 +15,7 @@ public class PhaseProcessInput : MonoBehaviour
         // before processing, check if able to process or not
 
         bool playerManagerHasDoneProcess = PlayerManager.Instance.CheckAllPlayersHasDoneProcess();
-        bool enemyManagerHasDoneProcess = true;
+        bool enemyManagerHasDoneProcess = EnemyManager.Instance.CheckAllEnemiesHasDoneProcess();
         bool levelManagerHasDoneProcess = true;
 
         currentTimeBeforeNextPhase += Time.deltaTime;
@@ -32,5 +32,6 @@ public class PhaseProcessInput : MonoBehaviour
         currentTimeBeforeNextPhase = 0.0f;
         // hasdoneaction semua nya false
         PlayerManager.Instance.SetupAllPlayersProcessInput();
+        EnemyManager.Instance.SetupAllEnemiesProcessInput();
     }
 }
