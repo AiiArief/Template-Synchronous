@@ -21,13 +21,13 @@ public class CollisionCheckerChild : MonoBehaviour
         return hashSet;
     }
 
-    public bool CheckColliderEntityUnpassable()
+    public bool CheckColliderHaveEntityTag<T>()
     {
         foreach(Collider collider in m_colliders)
         {
             if (!collider.isTrigger && collider.gameObject.isStatic)
                 return true;
-            if (collider.GetComponent<TagEntityUnpassable>() != null)
+            if (collider.GetComponent<T>() != null)
                 return true;
         }
 

@@ -10,8 +10,8 @@ public class Entity : MonoBehaviour
 
     public CharacterController characterController { get; private set; }
 
-    [SerializeField] CollisionChecker m_collisionChecker;
-    public CollisionChecker collisionChecker { get { return m_collisionChecker; } }
+    [SerializeField] CollisionEntityChecker m_collisionEntityChecker;
+    public CollisionEntityChecker collisionEntityChecker { get { return m_collisionEntityChecker; } }
 
     public virtual void SetupWaitInput()
     {
@@ -20,7 +20,6 @@ public class Entity : MonoBehaviour
 
     public virtual void WaitInput()
     {
-        storedActions.Add(new StoredActionMove(this));
         storedActions.Add(new StoredActionSkip());
     }
 

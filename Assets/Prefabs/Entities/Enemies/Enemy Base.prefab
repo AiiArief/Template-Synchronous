@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4578044065373459680}
   - component: {fileID: 4097880969989406750}
   - component: {fileID: 2355364631055528902}
-  - component: {fileID: 6507638456208089173}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -80,19 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6507638456208089173
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034578410090312171}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5424427083841236356
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,49 +111,6 @@ Transform:
   m_Father: {fileID: 7731039037329624237}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5799517260231559742
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3916647410236625305}
-  - component: {fileID: 5613197986163076844}
-  m_Layer: 0
-  m_Name: Cone Of Vision
-  m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3916647410236625305
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5799517260231559742}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.7, z: 0.6}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7731039037329624237}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5613197986163076844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5799517260231559742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89d2be1978d6641418d57d52ba586fda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7731039037021452319
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7731039037329624237}
   - component: {fileID: 7677541826883560135}
-  - component: {fileID: 220282964403504550}
+  - component: {fileID: 6878845995532331818}
   - component: {fileID: 8036168540114806956}
   m_Layer: 0
   m_Name: Enemy Base
@@ -279,7 +222,6 @@ Transform:
   m_Children:
   - {fileID: 2148475270858446919}
   - {fileID: 289372786976619632}
-  - {fileID: 3916647410236625305}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -301,7 +243,7 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &220282964403504550
+--- !u!114 &6878845995532331818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,8 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5334f15665e8b1842ada681c86615665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_collisionChecker: {fileID: 8688914131240562881}
-  m_coneOfVision: {fileID: 5613197986163076844}
+  m_collisionEntityChecker: {fileID: 8688914131240562881}
   m_patrolWaitInputs: []
 --- !u!114 &8036168540114806956
 MonoBehaviour:
@@ -338,7 +279,7 @@ PrefabInstance:
     - target: {fileID: 1012604619068076319, guid: d252c358e0ce0db4295043d1f2c02e03,
         type: 3}
       propertyPath: m_Name
-      value: Collision Checker
+      value: Collision Entity Checker 1x2
       objectReference: {fileID: 0}
     - target: {fileID: 2678732713793965786, guid: d252c358e0ce0db4295043d1f2c02e03,
         type: 3}

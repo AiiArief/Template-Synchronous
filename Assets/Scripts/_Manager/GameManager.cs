@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
         m_playerManager.SetupPlayersOnLevelStart(1); // temp
         m_enemyManager.SetupEnemiesOnLevelStart();
         m_phaseManager.SetPhase(PhaseEnum.WaitInput);
+        m_levelManager.SetupLevelPathfindingOnLevelStart();
 
         Cursor.lockState = CursorLockMode.Locked; // kalo pause munculin cursor;
         Application.targetFrameRate = 60;

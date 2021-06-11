@@ -7,7 +7,7 @@ public class EnemyManager : MonoBehaviour
     public static EnemyManager Instance;
     public List<EntityEnemy> enemies { get; private set; } = new List<EntityEnemy>();
 
-
+    public int maxAlertLevel = 15;
 
     public void SetupEnemiesOnLevelStart()
     {
