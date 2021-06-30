@@ -6,24 +6,25 @@ public class LevelGridNode
 {
     public LevelGrid parentGrid { get; private set; }
     public int x { get; private set; }
-    public int z { get; private set; }
+    public int y { get; private set; }
     public Vector3 realWorldPos { get; private set; }
+
+    public bool isCliffNode { get; private set; } = false;
+    public bool isStaticNode { get; private set; } = false;
+    public List<Entity> entityListOnThisNode { get; private set; } = new List<Entity>();
 
     public int gCost;
     public int hCost;
     public int fCost;
-
-    public bool isWalkable = true;
     public LevelGridNode cameFromNode;
 
-    public LevelGridNode(int x, int z, Vector3 realWorldPos)
+    public LevelGridNode(int x, int y, Vector3 realWorldPos)
     {
         this.x = x;
-        this.z = z;
+        this.y = y;
         this.realWorldPos = realWorldPos;
 
-        _GenerateIsWalkable();
-        //Debug.Log(x + " " + z + " (" + realWorldPos + ")" + isWalkable);
+        _GenerateIsStaticNode();
     }
 
     public void ResetPathNode()
@@ -38,19 +39,33 @@ public class LevelGridNode
         fCost = gCost + hCost;
     }
 
-    private void _GenerateIsWalkable()
+    public bool CheckIsWalkable()
     {
-        Collider[] cols = Physics.OverlapBox(realWorldPos + new Vector3(0, 0.15f, 0), new Vector3(0.5f, 0.1f, 0.5f), Quaternion.identity, -1, QueryTriggerInteraction.Ignore);
+        if (isStaticNode)
+            return false;
+
+        foreach(Entity entity in entityListOnThisNode)
+        {
+            //if (entity.gameObject.activeSelf && entity.GetComponent<TagEntityUnpassable>())
+            //    return false;
+        }
+
+        return true;
+    }
+
+    private void _GenerateIsStaticNode()
+    {
+        Collider[] cols = Physics.OverlapBox(realWorldPos + new Vector3(0, 0.15f, 0), new Vector3(0.45f, 0.1f, 0.45f), Quaternion.identity, -1, QueryTriggerInteraction.Ignore);
         foreach (Collider col in cols)
         {
-            if(col.gameObject.isStatic)
+            if (col.gameObject.isStatic)
             {
-                isWalkable = false;
+                isStaticNode = true;
                 return;
             }
         }
 
-        isWalkable = true;
+        isStaticNode = false;
     }
 }
 
@@ -59,18 +74,18 @@ public class LevelGrid
     public int width { get; private set; }
     public int depth { get; private set; }
     public Vector3 startPos { get; private set; }
-    public LevelGridNode[,] gridNodes;
+    public LevelGridNode[,] gridNodes { get; private set; }
 
-    public LevelGrid(int width, int depth, Vector3 startPos)
+    public LevelGrid(int newWidth, int newDepth, Vector3 newStartPos)
     {
-        this.width = width;
-        this.depth = depth;
-        this.startPos = startPos;
+        width = newWidth;
+        depth = newDepth;
+        startPos = newStartPos;
 
         gridNodes = new LevelGridNode[width, depth];
-        for(int i=0; i<width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for(int j=0; j<depth; j++)
+            for (int j = 0; j < depth; j++)
             {
                 gridNodes[i, j] = new LevelGridNode(i, j, new Vector3(startPos.x + i, startPos.y, startPos.z + j));
             }
@@ -79,7 +94,7 @@ public class LevelGrid
 
     public void ResetAllPathNode()
     {
-        foreach(LevelGridNode node in gridNodes)
+        foreach (LevelGridNode node in gridNodes)
         {
             node.ResetPathNode();
         }
@@ -90,13 +105,21 @@ public class LevelGrid
         int x = (int)(0 - startPos.x + pos.x);
         int z = (int)(0 - startPos.z + pos.z);
 
-        if (x < 0 || x > width)
-            return null;
-
-        if (z < 0 || z > depth)
+        if (!CheckNodeIsExist(new Vector2(x, z)))
             return null;
 
         return gridNodes[x, z];
+    }
+
+    public bool CheckNodeIsExist(Vector2 pos)
+    {
+        if (pos.x < 0 || pos.x >= width)
+            return false;
+
+        if (pos.y < 0 || pos.y >= depth)
+            return false;
+
+        return true;
     }
 }
 
@@ -104,17 +127,25 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
 
-    [SerializeField] Transform m_baseFloorPathfinding;
+    [SerializeField] Transform m_gridMesh;
 
     public Pathfinding pathfinding { get; private set; }
+    public LevelGrid grid { get; private set; }
 
-    public void SetupLevelPathfindingOnLevelStart()
+    public void SetupLevelOnLevelStart()
     {
-        Vector2 gridSize = new Vector2((int)m_baseFloorPathfinding.localScale.x, (int)m_baseFloorPathfinding.localScale.z);
-        Vector3 gridStartPos = new Vector3(m_baseFloorPathfinding.position.x - gridSize.x / 2, 0.0f, m_baseFloorPathfinding.position.z - gridSize.y / 2);
-        LevelGrid grid = new LevelGrid((int)gridSize.x, (int)gridSize.y, gridStartPos);
-        //pathfinding = new Pathfinding(grid);
-        pathfinding = new Pathfinding(new LevelGrid(44, 44, new Vector3(-22, 0, -22)));
+        Vector2 gridSize = new Vector2((int)m_gridMesh.localScale.x, (int)m_gridMesh.localScale.y);
+        Vector3 gridStartPos = new Vector3(m_gridMesh.position.x - gridSize.x / 2, 0.0f, m_gridMesh.position.z - gridSize.y / 2);
+
+        grid = new LevelGrid((int)gridSize.x, (int)gridSize.y, gridStartPos);
+        pathfinding = new Pathfinding(grid);
+    }
+
+    public LevelGridNode AssignToGridFromRealWorldPos(Entity entity)
+    {
+        LevelGridNode nodeFromRealWorldPos = grid.ConvertPosToGrid(entity.transform.position);
+
+        return nodeFromRealWorldPos;
     }
 
     private void Awake()

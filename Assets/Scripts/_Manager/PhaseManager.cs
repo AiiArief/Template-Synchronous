@@ -48,9 +48,9 @@ public class PhaseManager : MonoBehaviour
     {
         Instance = this;
 
-        waitInput = GetComponentInChildren<PhaseWaitInput>();
-        processInput = GetComponentInChildren<PhaseProcessInput>();
-        afterInput = GetComponentInChildren<PhaseAfterInput>();
+        waitInput = GetComponentInChildren<PhaseWaitInput>(true);
+        processInput = GetComponentInChildren<PhaseProcessInput>(true);
+        afterInput = GetComponentInChildren<PhaseAfterInput>(true);
     }
 
     private void _DisableAllPhase()

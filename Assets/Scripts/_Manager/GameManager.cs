@@ -23,11 +23,10 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // set cutscene, config all manager, idk
+        m_levelManager.SetupLevelOnLevelStart();
         m_playerManager.SetupPlayersOnLevelStart(1); // temp
         m_enemyManager.SetupEnemiesOnLevelStart();
         m_phaseManager.SetPhase(PhaseEnum.WaitInput);
-        m_levelManager.SetupLevelPathfindingOnLevelStart();
 
         Cursor.lockState = CursorLockMode.Locked; // kalo pause munculin cursor;
         Application.targetFrameRate = 60;

@@ -30,7 +30,6 @@ public class EnemyManager : MonoBehaviour
                 enemy.WaitInput();
         }
 
-        // kalo semua udah ada stored action return true
         foreach (EntityEnemy enemy in enemies)
         {
             if (enemy.storedActions.Count == 0)
@@ -107,7 +106,11 @@ public class EnemyManager : MonoBehaviour
         foreach (Transform child in transform)
         {
             EntityEnemy enemy = child.GetComponent<EntityEnemy>();
-            if (enemy) enemies.Add(enemy);
+            if (enemy)
+            {
+                enemies.Add(enemy);
+                enemy.AssignToLevelGrid();
+            }
         }
     }
 }

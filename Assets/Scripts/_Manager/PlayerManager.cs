@@ -26,14 +26,12 @@ public class PlayerManager : MonoBehaviour
 
     public bool CheckAllPlayersHasDoneInput()
     {
-        //panggil semua player buat liat input
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable && player.storedActions.Count == 0)
                 player.WaitInput();
         }
 
-        // kalo semua udah ada stored action return true
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable && player.storedActions.Count == 0)
@@ -53,7 +51,6 @@ public class PlayerManager : MonoBehaviour
 
     public bool CheckAllPlayersHasDoneProcess()
     {
-        // panggil semua player process
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable && !player.CheckAllActionHasDone())
@@ -64,7 +61,6 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        // return true kalo semua udah selesai process
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable && !player.CheckAllActionHasDone())
@@ -84,14 +80,12 @@ public class PlayerManager : MonoBehaviour
 
     public bool CheckAllPlayersHasDoneAfterInput()
     {
-        // panggil semua player after input
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable)
                 player.AfterInput();
         }
 
-        // return true kalo semua udah selesai after input
         foreach (EntityPlayer player in players)
         {
             if (player.isPlayable && !player.afterActionHasDone)
@@ -99,6 +93,24 @@ public class PlayerManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public List<EntityPlayer> GetPlayerPlayableList()
+    {
+        var playablePlayers = new List<EntityPlayer>();
+        foreach (EntityPlayer player in players)
+        {
+            if (player.isPlayable)
+                playablePlayers.Add(player);
+        }
+
+        return playablePlayers;
+    }
+
+    public void SetPlayerPlayable(int playerId, bool set)
+    {
+        players[playerId].SetIsPlayable(set);
+        _SetupAllPlayersCamera(GetPlayerPlayableList());
     }
 
     private void Awake()
@@ -111,11 +123,14 @@ public class PlayerManager : MonoBehaviour
         foreach (Transform child in transform)
         {
             EntityPlayer player = child.GetComponent<EntityPlayer>();
-            if (player) players.Add(player);
+            if (player)
+            {
+                players.Add(player);
+                player.AssignToLevelGrid();
+            }
         }
     }
 
-    // temp, masih ada kemungkinan ngebug kalo tiba2 player2 disconnect pas main ber4
     private void _SetPlayersIsActive(int playerCount)
     {
         for (int i = 0; i < playerCount; i++)
@@ -124,30 +139,31 @@ public class PlayerManager : MonoBehaviour
         for (int i = playerCount; i < players.Count; i++)
             players[i].SetIsPlayable(false);
 
-        _SetupAllPlayersCamera(playerCount);
+        _SetupAllPlayersCamera(GetPlayerPlayableList());
     }
 
-    private void _SetupAllPlayersCamera(int playerCount)
+    private void _SetupAllPlayersCamera(List<EntityPlayer> playablePlayers)
     {
-        switch(playerCount)
+        int playerCount = playablePlayers.Count;
+        switch (playerCount)
         {
             case 1:
-                players[0].playerCameraLook.playerCamera.rect = new Rect(0, 0, 1, 1);
+                playablePlayers[0].playerCameraLook.playerCamera.rect = new Rect(0, 0, 1, 1);
                 break;
             case 2:
-                players[0].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 1);
-                players[1].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 1);
+                playablePlayers[0].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 1);
+                playablePlayers[1].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 1);
                 break;
             case 3:
-                players[0].playerCameraLook.playerCamera.rect = new Rect(0, 0.5f, 1, 0.5f);
-                players[1].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
-                players[2].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
+                playablePlayers[0].playerCameraLook.playerCamera.rect = new Rect(0, 0.5f, 1, 0.5f);
+                playablePlayers[1].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
+                playablePlayers[2].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
                 break;
             case 4:
-                players[0].playerCameraLook.playerCamera.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
-                players[1].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
-                players[2].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
-                players[3].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
+                playablePlayers[0].playerCameraLook.playerCamera.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
+                playablePlayers[1].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                playablePlayers[2].playerCameraLook.playerCamera.rect = new Rect(0, 0, 0.5f, 0.5f);
+                playablePlayers[3].playerCameraLook.playerCamera.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
                 break;
         }
     }

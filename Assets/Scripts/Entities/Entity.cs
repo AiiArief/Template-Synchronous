@@ -6,12 +6,25 @@ public class Entity : MonoBehaviour
 {
     public List<StoredAction> storedActions { get; private set; } = new List<StoredAction>();
     public bool afterActionHasDone { get; protected set; } = false; // temp
-    public int gravityPerTurn { get; private set; } = 3;
+
+    [SerializeField] float m_gravityPerTurn = 3.0f;
+    public float gravityPerTurn { get { return m_gravityPerTurn; } }
+
+    public LevelGridNode currentNode { get; private set; } // temp, satu kotak dulu
 
     public CharacterController characterController { get; private set; }
 
     [SerializeField] CollisionEntityChecker m_collisionEntityChecker;
     public CollisionEntityChecker collisionEntityChecker { get { return m_collisionEntityChecker; } }
+
+    public void AssignToLevelGrid(LevelGridNode node = null)
+    {
+        currentNode = node;
+        if(node == null)
+            currentNode = LevelManager.Instance.AssignToGridFromRealWorldPos(this);
+
+        currentNode.entityListOnThisNode.Add(this);
+    }
 
     public virtual void SetupWaitInput()
     {

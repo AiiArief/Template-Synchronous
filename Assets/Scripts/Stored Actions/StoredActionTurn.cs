@@ -16,11 +16,12 @@ public class StoredActionTurn : StoredAction
 
     public StoredActionTurn(EntityPlayer player, Vector3 m_currentCameraRot)
     {
+        Vector3 faceCameraDir = new Vector3(0.0f, _ConvertTo90Degrees(m_currentCameraRot.y), 0.0f);
+        player.transform.rotation = Quaternion.Euler(faceCameraDir);
+        player.playerCameraLook.transform.rotation = Quaternion.Euler(m_currentCameraRot);
+
         action = () =>
         {
-            Vector3 faceCameraDir = new Vector3(0.0f, _ConvertTo90Degrees(m_currentCameraRot.y), 0.0f);
-            player.transform.rotation = Quaternion.Euler(faceCameraDir);
-            player.playerCameraLook.transform.rotation = Quaternion.Euler(m_currentCameraRot);
             actionHasDone = true;
         };
     }

@@ -50,7 +50,7 @@ public class Pathfinding
             foreach(LevelGridNode neighbourNode in _GenerateNeighbourList(currentNode))
             {
                 if (m_closedList.Contains(neighbourNode)) continue;
-                if (!neighbourNode.isWalkable)
+                if (!neighbourNode.CheckIsWalkable())
                 {
                     m_closedList.Add(neighbourNode);
                     continue;
@@ -72,6 +72,7 @@ public class Pathfinding
             }
         }
 
+        Debug.Log(startNode.x + "," + startNode.y + " " + endNode.x + "," + endNode.y);
         // Out of nodes on the openList
         return null;
     }
@@ -81,16 +82,16 @@ public class Pathfinding
         List<LevelGridNode> neighbourList = new List<LevelGridNode>();
 
         if(currentNode.x - 1 >= 0)
-            neighbourList.Add(m_grid.gridNodes[currentNode.x - 1, currentNode.z]);
+            neighbourList.Add(m_grid.gridNodes[currentNode.x - 1, currentNode.y]);
 
         if (currentNode.x + 1 < m_grid.width)
-            neighbourList.Add(m_grid.gridNodes[currentNode.x + 1, currentNode.z]);
+            neighbourList.Add(m_grid.gridNodes[currentNode.x + 1, currentNode.y]);
 
-        if (currentNode.z - 1 >= 0)
-            neighbourList.Add(m_grid.gridNodes[currentNode.x, currentNode.z - 1]);
+        if (currentNode.y - 1 >= 0)
+            neighbourList.Add(m_grid.gridNodes[currentNode.x, currentNode.y - 1]);
 
-        if (currentNode.z + 1 < m_grid.depth)
-            neighbourList.Add(m_grid.gridNodes[currentNode.x, currentNode.z + 1]);
+        if (currentNode.y + 1 < m_grid.depth)
+            neighbourList.Add(m_grid.gridNodes[currentNode.x, currentNode.y + 1]);
 
         return neighbourList;
     }
@@ -98,7 +99,7 @@ public class Pathfinding
     private int _CalculateDistanceCost(LevelGridNode a, LevelGridNode b)
     {
         int xDistance = Mathf.Abs(a.x - b.x);
-        int yDistance = Mathf.Abs(a.z - b.z);
+        int yDistance = Mathf.Abs(a.y - b.y);
         int total = Mathf.Abs(xDistance + yDistance);
         return MOVE_STRAIGHT_COST * total;
     }
