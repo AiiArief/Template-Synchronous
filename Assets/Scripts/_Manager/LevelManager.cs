@@ -9,14 +9,8 @@ public class LevelGridNode
     public int y { get; private set; }
     public Vector3 realWorldPos { get; private set; }
 
-    public bool isCliffNode { get; private set; } = false;
     public bool isStaticNode { get; private set; } = false;
     public List<Entity> entityListOnThisNode { get; private set; } = new List<Entity>();
-
-    public int gCost;
-    public int hCost;
-    public int fCost;
-    public LevelGridNode cameFromNode;
 
     public LevelGridNode(int x, int y, Vector3 realWorldPos)
     {
@@ -27,18 +21,6 @@ public class LevelGridNode
         _GenerateIsStaticNode();
     }
 
-    public void ResetPathNode()
-    {
-        gCost = 99999999;
-        CalculateFCost();
-        cameFromNode = null;
-    }
-
-    public void CalculateFCost()
-    {
-        fCost = gCost + hCost;
-    }
-
     public bool CheckIsWalkable()
     {
         if (isStaticNode)
@@ -46,8 +28,8 @@ public class LevelGridNode
 
         foreach(Entity entity in entityListOnThisNode)
         {
-            //if (entity.gameObject.activeSelf && entity.GetComponent<TagEntityUnpassable>())
-            //    return false;
+            if (entity.gameObject.activeSelf && entity.GetComponent<TagEntityUnpassable>())
+                return false;
         }
 
         return true;
@@ -92,14 +74,6 @@ public class LevelGrid
         }
     }
 
-    public void ResetAllPathNode()
-    {
-        foreach (LevelGridNode node in gridNodes)
-        {
-            node.ResetPathNode();
-        }
-    }
-
     public LevelGridNode ConvertPosToGrid(Vector3 pos)
     {
         int x = (int)(0 - startPos.x + pos.x);
@@ -125,11 +99,8 @@ public class LevelGrid
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance;
-
     [SerializeField] Transform m_gridMesh;
 
-    public Pathfinding pathfinding { get; private set; }
     public LevelGrid grid { get; private set; }
 
     public void SetupLevelOnLevelStart()
@@ -138,7 +109,6 @@ public class LevelManager : MonoBehaviour
         Vector3 gridStartPos = new Vector3(m_gridMesh.position.x - gridSize.x / 2, 0.0f, m_gridMesh.position.z - gridSize.y / 2);
 
         grid = new LevelGrid((int)gridSize.x, (int)gridSize.y, gridStartPos);
-        pathfinding = new Pathfinding(grid);
     }
 
     public LevelGridNode AssignToGridFromRealWorldPos(Entity entity)
@@ -146,10 +116,5 @@ public class LevelManager : MonoBehaviour
         LevelGridNode nodeFromRealWorldPos = grid.ConvertPosToGrid(entity.transform.position);
 
         return nodeFromRealWorldPos;
-    }
-
-    private void Awake()
-    {
-        Instance = this;
     }
 }

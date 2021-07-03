@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    public List<StoredAction> storedActions { get; private set; } = new List<StoredAction>();
-    public bool afterActionHasDone { get; protected set; } = false; // temp
+    public bool isUpdateAble { get { return gameObject.activeSelf; } }
 
+    public List<StoredAction> storedActions { get; private set; } = new List<StoredAction>();
+    public bool afterActionHasDone { get; protected set; } = false;
+
+    public CharacterController characterController { get; private set; }
     [SerializeField] float m_gravityPerTurn = 3.0f;
     public float gravityPerTurn { get { return m_gravityPerTurn; } }
 
-    public LevelGridNode currentNode { get; private set; } // temp, satu kotak dulu
-
-    public CharacterController characterController { get; private set; }
-
-    [SerializeField] CollisionEntityChecker m_collisionEntityChecker;
-    public CollisionEntityChecker collisionEntityChecker { get { return m_collisionEntityChecker; } }
+    public LevelGridNode currentNode { get; private set; }
 
     public void AssignToLevelGrid(LevelGridNode node = null)
     {
         currentNode = node;
-        if(node == null)
-            currentNode = LevelManager.Instance.AssignToGridFromRealWorldPos(this);
+        if (node == null)
+            currentNode = GameManager.Instance.levelManager.AssignToGridFromRealWorldPos(this);
 
         currentNode.entityListOnThisNode.Add(this);
     }
@@ -62,8 +60,18 @@ public class Entity : MonoBehaviour
         afterActionHasDone = true;
     }
 
-    protected virtual void Awake()
+    public void SetIsUpdateAble(bool isUpdateAble)
     {
-        characterController = GetComponent<CharacterController>();
+        gameObject.SetActive(isUpdateAble);
+        storedActions.Clear();
+
+        if (isUpdateAble)
+            _AssignComponent();
+    }
+
+    protected virtual void _AssignComponent()
+    {
+        if(!characterController)
+            characterController = GetComponent<CharacterController>();
     }
 }

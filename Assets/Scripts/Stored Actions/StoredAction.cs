@@ -10,7 +10,7 @@ public abstract class StoredAction
 
     protected bool _CheckProcessInputHasOverMinimumTime()
     {
-        return PhaseManager.Instance.processInput.currentTimeBeforeNextPhase >= PhaseManager.Instance.processInput.minimumTimeBeforeNextPhase;
+        return GameManager.Instance.phaseManager.processInput.currentTimeBeforeNextPhase >= GameManager.Instance.phaseManager.processInput.minimumTimeBeforeNextPhase;
     }
 }
 

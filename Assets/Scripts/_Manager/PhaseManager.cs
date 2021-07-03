@@ -12,11 +12,14 @@ public enum PhaseEnum
 
 public class PhaseManager : MonoBehaviour
 {
-    public static PhaseManager Instance;
+    [SerializeField] PhaseWaitInput m_waitInput;
+    public PhaseWaitInput waitInput { get { return m_waitInput; } }
 
-    public PhaseWaitInput waitInput { get; private set; }
-    public PhaseProcessInput processInput { get; private set; }
-    public PhaseAfterInput afterInput { get; private set; }
+    [SerializeField] PhaseProcessInput m_processInput;
+    public PhaseProcessInput processInput { get { return m_processInput; } }
+
+    [SerializeField] PhaseAfterInput m_afterInput;
+    public PhaseAfterInput afterInput { get { return m_afterInput; } }
 
     public PhaseEnum currentPhase { get; private set; } = PhaseEnum.None;
 
@@ -33,40 +36,31 @@ public class PhaseManager : MonoBehaviour
         switch(currentPhase)
         {
             case PhaseEnum.WaitInput:
-                waitInput.UpdateWaitInput();
+                m_waitInput.UpdateWaitInput();
                 break;
             case PhaseEnum.ProcessInput:
-                processInput.UpdateProcessInput();
+                m_processInput.UpdateProcessInput();
                 break;
             case PhaseEnum.AfterInput:
-                afterInput.UpdateAfterInput();
+                m_afterInput.UpdateAfterInput();
                 break;
         }
     }
 
-    private void Awake()
-    {
-        Instance = this;
-
-        waitInput = GetComponentInChildren<PhaseWaitInput>(true);
-        processInput = GetComponentInChildren<PhaseProcessInput>(true);
-        afterInput = GetComponentInChildren<PhaseAfterInput>(true);
-    }
-
     private void _DisableAllPhase()
     {
-        waitInput.gameObject.SetActive(false);
-        processInput.gameObject.SetActive(false);
-        afterInput.gameObject.SetActive(false);
+        m_waitInput.gameObject.SetActive(false);
+        m_processInput.gameObject.SetActive(false);
+        m_afterInput.gameObject.SetActive(false);
     }
 
     private void _ActivateCurrentPhase()
     {
         switch(currentPhase)
         {
-            case PhaseEnum.WaitInput: waitInput.gameObject.SetActive(true); break;
-            case PhaseEnum.ProcessInput: processInput.gameObject.SetActive(true); break;
-            case PhaseEnum.AfterInput: afterInput.gameObject.SetActive(true); break;
+            case PhaseEnum.WaitInput: m_waitInput.ActivateWaitInput(); break;
+            case PhaseEnum.ProcessInput: m_processInput.ActivateProcessInput(); break;
+            case PhaseEnum.AfterInput: m_afterInput.ActivateAfterInput(); break;
         }
     }
 }

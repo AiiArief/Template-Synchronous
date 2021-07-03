@@ -4,28 +4,22 @@ using UnityEngine;
 
 public class PhaseAfterInput : MonoBehaviour
 {
-    public void UpdateAfterInput()
+    public void ActivateAfterInput()
     {
-        // get after input from all player, enemy, and level
-        // check below entities & forward entities
-        // store it what will happened?
-        // if all after input has done, set to wait input
+        gameObject.SetActive(true);
 
-        bool playerManagerHasDoneAfterInput = PlayerManager.Instance.CheckAllPlayersHasDoneAfterInput();
-        bool enemyManagerHasDoneAfterInput = EnemyManager.Instance.CheckAllEnemiesHasDoneAfterInput();
-        bool levelManagerHasDoneAfterInput = true;
-
-        if (playerManagerHasDoneAfterInput && enemyManagerHasDoneAfterInput && levelManagerHasDoneAfterInput)
-        {
-            PhaseManager.Instance.SetPhase(PhaseEnum.WaitInput);
-            // reset semuanya
-        }
+        GameManager.Instance.playerManager.SetupEntitiesOnAfterInputStart();
+        GameManager.Instance.enemyManager.SetupEntitiesOnAfterInputStart();
     }
 
-    private void OnEnable()
+    public void UpdateAfterInput()
     {
-        // afteraction semuanya false
-        PlayerManager.Instance.SetupAllPlayersAfterInput();
-        EnemyManager.Instance.SetupAllEnemiesAfterInput();
+        bool playerManagerHasDoneAfterInput = GameManager.Instance.playerManager.CheckEntitiesHasDoneAfterInput();
+        bool enemyManagerHasDoneAfterInput = GameManager.Instance.enemyManager.CheckEntitiesHasDoneAfterInput();
+
+        if (playerManagerHasDoneAfterInput && enemyManagerHasDoneAfterInput)
+        {
+            GameManager.Instance.phaseManager.SetPhase(PhaseEnum.WaitInput);
+        }
     }
 }

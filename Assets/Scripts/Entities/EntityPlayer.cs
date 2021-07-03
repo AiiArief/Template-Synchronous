@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class EntityPlayer : Entity
 {
-    public bool isPlayable { get { return gameObject.activeSelf; } }
     public int playerId { get { return transform.GetSiblingIndex(); } }
 
     [SerializeField] CameraLook m_playerCameraLook;
@@ -19,14 +18,20 @@ public class EntityPlayer : Entity
         {
             float moveH = Input.GetAxisRaw("Horizontal" + " #" + playerId);
             float moveV = Input.GetAxisRaw("Vertical" + " #" + playerId);
+            float camH = Input.GetAxis("Camera X" + " #" + playerId);
+            float camV = Input.GetAxis("Camera Y" + " #" + playerId);
             bool moveMod = Input.GetButton("Move Modifier" + " #" + playerId);
             bool camMod = Input.GetButton("Camera Modifier 1" + " #" + playerId) || Input.GetButton("Camera Modifier 2" + " #" + playerId);
             bool skipTurn = _CheckDoubleInput("Move Modifier" + " #" + playerId, 0.5f);
+
+            Vector2 camRot = (camMod) ? new Vector2(moveH, moveV) : new Vector2(camH, camV);
+            playerCameraLook.HandleCameraWaitInput(camRot.x, camRot.y);
 
             if (skipTurn)
             {
                 storedActions.Add(new StoredActionMove(this));
                 storedActions.Add(new StoredActionSkip());
+                storedActions.Add(new StoredActionCameraLook(this, m_playerCameraLook));
                 return;
             }
 
@@ -38,20 +43,10 @@ public class EntityPlayer : Entity
 
                 storedActions.Add(new StoredActionTurn(this, m_playerCameraLook.currentCameraRot));
                 storedActions.Add(new StoredActionMove(this, moveDir, moveRange));
+                storedActions.Add(new StoredActionCameraLook(this, m_playerCameraLook));
                 return;
             }
         }
-    }
-
-    public void SetIsPlayable(bool newIsPlayable) { 
-        gameObject.SetActive(newIsPlayable);
-        storedActions.Clear();
-    }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        m_playerCameraLook.SetupCameraLook(this);
     }
 
     private float _FCInput(float input)

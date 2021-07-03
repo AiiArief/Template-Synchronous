@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class PhaseWaitInput : MonoBehaviour
 {
-    public void UpdateWaitInput()
+    public void ActivateWaitInput()
     {
-        // wait all input from player, enemy, and level
-        // store all input to each own object
-        // check has stored from player, enemy, and level --> change phase
+        gameObject.SetActive(true);
 
-        bool playerManagerHasDoneInput = PlayerManager.Instance.CheckAllPlayersHasDoneInput();
-        bool enemyManagerHasDoneInput = EnemyManager.Instance.CheckAllEnemiesHasDoneInput();
-        bool levelManagerHasDoneInput = true;
-
-        if(playerManagerHasDoneInput && enemyManagerHasDoneInput && levelManagerHasDoneInput)
-        {
-            PhaseManager.Instance.SetPhase(PhaseEnum.ProcessInput);
-        }
+        GameManager.Instance.playerManager.SetupEntitiesOnWaitInputStart();
+        GameManager.Instance.enemyManager.SetupEntitiesOnWaitInputStart();
     }
 
-    private void OnEnable()
+    public void UpdateWaitInput()
     {
-        PlayerManager.Instance.SetupAllPlayersWaitInput();
-        EnemyManager.Instance.SetupAllEnemiesWaitInput();
+        bool playerManagerHasDoneInput = GameManager.Instance.playerManager.CheckEntitiesHasDoneWaitInput();
+        bool enemyManagerHasDoneInput = GameManager.Instance.enemyManager.CheckEntitiesHasDoneWaitInput();
 
+        if(playerManagerHasDoneInput && enemyManagerHasDoneInput)
+        {
+            GameManager.Instance.phaseManager.SetPhase(PhaseEnum.ProcessInput);
+        }
     }
 }

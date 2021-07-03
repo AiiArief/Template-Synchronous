@@ -19,11 +19,11 @@ public class StoredActionMove : StoredAction
     public StoredActionMove(Entity entity, Vector3 direction, float range = 1)
     {
         Transform transform = entity.transform;
-        LevelGrid currentGrid = LevelManager.Instance.grid;
+        LevelGrid currentGrid = GameManager.Instance.levelManager.grid;
         LevelGridNode currentNode = entity.currentNode;
 
         Vector3 localTarget = transform.right * direction.x + transform.forward * direction.z;
-        float moveSpeed = 1.0f / PhaseManager.Instance.processInput.minimumTimeBeforeNextPhase;
+        float moveSpeed = 1.0f / GameManager.Instance.phaseManager.processInput.minimumTimeBeforeNextPhase;
         float gravitySpeed = _CalcGravitySpeed(entity.gravityPerTurn);
         
         currentNode.entityListOnThisNode.Remove(entity);
@@ -59,6 +59,6 @@ public class StoredActionMove : StoredAction
 
     private float _CalcGravitySpeed(float gravityPerTurn)
     {
-        return gravityPerTurn / PhaseManager.Instance.processInput.minimumTimeBeforeNextPhase;
+        return gravityPerTurn / GameManager.Instance.phaseManager.processInput.minimumTimeBeforeNextPhase;
     }
 }
