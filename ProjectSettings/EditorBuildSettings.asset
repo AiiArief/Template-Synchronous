@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Sample Scene.unity
-    guid: 17698a31d99f53d47b255503b4915dfe
+    path: Assets/_Game Assets/Scenes/_prototype/_template.unity
+    guid: 1115dcf8caf2bee478f61628438b0e87
+  - enabled: 1
+    path: Assets/_Game Assets/Scenes/Void Realm.unity
+    guid: bba8ed221c293bf4898838bf9438386e
+  - enabled: 1
+    path: Assets/_Game Assets/Scenes/Snow.unity
+    guid: 97879d51b49a3eb4583fadbd6fdeb109
   m_configObjects: {}
