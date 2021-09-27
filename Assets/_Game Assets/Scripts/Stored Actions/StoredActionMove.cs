@@ -59,7 +59,7 @@ public class StoredActionMove : StoredAction
             }
             else
             {
-                transform.position = target;
+                transform.position = new Vector3(target.x, entity.transform.position.y, target.z); // ubah jadi cuma x z aja kah?
                 actionHasDone = true;
             }
         };

@@ -8,6 +8,7 @@ public class EntityManagerNPC : EntityManager
     {
         base.SetupEntitiesOnLevelStart();
         _AssignNPCsToGrid();
+        _SetNPCsIsActive();
     }
 
     private void _AssignNPCsToGrid()
@@ -15,6 +16,14 @@ public class EntityManagerNPC : EntityManager
         foreach(EntityCharacterNPC npc in entities)
         {
             npc.AssignToLevelGrid();
+        }
+    }
+
+    private void _SetNPCsIsActive()
+    {
+        foreach(EntityCharacterNPC npc in entities)
+        {
+            npc.SetIsUpdateAble(true);
         }
     }
 }
