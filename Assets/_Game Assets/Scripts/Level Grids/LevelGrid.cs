@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class LevelGrid : MonoBehaviour
 {
-    [SerializeField] LevelGridNode m_gridNodePrefab;
-
     [SerializeField] Vector2 m_size;
     public Vector2 size { get { return m_size; } }
 
     public Vector3 startPos { get; private set; }
+
+    [SerializeField] LevelGridNodeScriptableObject m_levelGridNodeScriptableObject;
+    public LevelGridNodeScriptableObject levelGridNodeScriptableObject { get { return m_levelGridNodeScriptableObject; } }
+
     public LevelGridNode[,] gridNodes { get; private set; }
 
     public void EditorGenerateAllGridNodes()
@@ -17,23 +19,22 @@ public class LevelGrid : MonoBehaviour
         EditorDestroyAllNodes();
 
         Vector3 tempStartPos = _CalculateStartPos();
+        m_levelGridNodeScriptableObject.levelGridNodes = new LevelGridNode[(int)size.x * (int)size.y];
+        int index = 0;
         for (int i = 0; i < size.x; i++)
         {
             for (int j = 0; j < size.y; j++)
             {
-                LevelGridNode node = Instantiate(m_gridNodePrefab, transform, false);
-                node.EditorGenerateGridNode(new Vector2(i, j), new Vector3(tempStartPos.x + i, tempStartPos.y, tempStartPos.z + j));
+                m_levelGridNodeScriptableObject.levelGridNodes[index] = new LevelGridNode();
+                m_levelGridNodeScriptableObject.levelGridNodes[index].EditorGenerateGridNode(new Vector2(i, j), new Vector3(tempStartPos.x + i, tempStartPos.y, tempStartPos.z + j));
+                index++;
             }
         }
     }
 
     public void EditorDestroyAllNodes()
     {
-        int childCountBefore = transform.childCount;
-        for (int i = 0; i < childCountBefore; i++)
-        {
-            DestroyImmediate(transform.GetChild(0).gameObject);
-        }
+        m_levelGridNodeScriptableObject.levelGridNodes = null;
     }
 
     public void SetupGridOnLevelStart()
@@ -47,7 +48,8 @@ public class LevelGrid : MonoBehaviour
         {
             for(int j=0; j<size.y; j++)
             {
-                gridNodes[i, j] = transform.GetChild(index).GetComponent<LevelGridNode>();
+                gridNodes[i, j] = m_levelGridNodeScriptableObject.levelGridNodes[index];
+                gridNodes[i, j].parentGrid = this;
                 index++;
             }
         }

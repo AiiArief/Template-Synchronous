@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class LevelGridNode : MonoBehaviour
+public class LevelGridNode
 {
+    [HideInInspector] public LevelGrid parentGrid;
+
     [SerializeField] Vector2 m_gridPos;
     public Vector2 gridPos { get { return m_gridPos; } }
 
@@ -13,8 +15,6 @@ public class LevelGridNode : MonoBehaviour
 
     [SerializeField] bool m_isStaticNode;
     public bool isStaticNode { get { return m_isStaticNode; } }
-
-    public LevelGrid parentGrid { get { return transform.GetComponentInParent<LevelGrid>(); } }
     public List<Entity> entityListOnThisNode { get; private set; } = new List<Entity>();
 
     [HideInInspector] public int gCost;
@@ -24,8 +24,6 @@ public class LevelGridNode : MonoBehaviour
 
     public void EditorGenerateGridNode(Vector2 gridPos, Vector3 realWorldPos)
     {
-        transform.position = realWorldPos;
-
         m_gridPos = gridPos;
         m_realWorldPos = realWorldPos;
         _GenerateIsStaticNode();

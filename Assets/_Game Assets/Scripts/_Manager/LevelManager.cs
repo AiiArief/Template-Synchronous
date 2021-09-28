@@ -10,7 +10,6 @@ public class LevelManager : MonoBehaviour
 
     public void SetupAllGridsOnLevelStart()
     {
-        // new pathfinding?
         foreach (LevelGrid grid in m_grids)
         {
             grid.SetupGridOnLevelStart();

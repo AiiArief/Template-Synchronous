@@ -9,7 +9,11 @@ public class LevelPathfinding
     List<LevelGridNode> m_openList;
     List<LevelGridNode> m_closedList;
 
-    public List<LevelGridNode> FindPath(Vector3 startWorldPos, Vector3 endWorldPos)
+    // trik2 optimisasi :
+    // jangan jauh2 pathfindingnya
+    // kalo emang ga ada objek antara dua point, simple move to aja
+    // kalo tujuan udah ada entity, jangan ngesearch semuanya
+    public List<LevelGridNode> FindPath(Vector3 startWorldPos, Vector3 endWorldPos, float maxDistance = 20.0f)
     {
         LevelGrid startNodeGrid = GameManager.Instance.levelManager.GetClosestGridFromPosition(startWorldPos);
         LevelGrid endNodeGrid = GameManager.Instance.levelManager.GetClosestGridFromPosition(endWorldPos);
@@ -29,6 +33,7 @@ public class LevelPathfinding
             Debug.Log("Invalid Node :\nStart Node : " + startNode + "\nEnd Node : " + endNode);
             return null;
         }
+
         m_openList = new List<LevelGridNode> { startNode };
         m_closedList = new List<LevelGridNode>();
 
@@ -55,7 +60,7 @@ public class LevelPathfinding
             foreach (LevelGridNode neighbourNode in _GenerateNeighbourList(currentNode))
             {
                 if (m_closedList.Contains(neighbourNode)) continue;
-                if (!neighbourNode.CheckIsWalkable()) // kalo ada entity di tujuan bakalan false
+                if (!neighbourNode.CheckIsWalkable()) // ini tuh kalo ada entity di tujuan bakalan false
                 {
                     m_closedList.Add(neighbourNode);
                     continue;
@@ -77,8 +82,6 @@ public class LevelPathfinding
             }
         }
 
-        //Debug.Log(startNode.x + "," + startNode.y + " " + endNode.x + "," + endNode.y);
-        // Out of nodes on the openList
         return null;
     }
 
