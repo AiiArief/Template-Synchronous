@@ -13,6 +13,7 @@ public class LevelPathfinding
     // jangan jauh2 pathfindingnya
     // kalo emang ga ada objek antara dua point, simple move to aja
     // kalo tujuan udah ada entity, jangan ngesearch semuanya
+    // kalo pathfindingnya masih sama ga usah find path
     public List<LevelGridNode> FindPath(Vector3 startWorldPos, Vector3 endWorldPos, float maxDistance = 20.0f)
     {
         LevelGrid startNodeGrid = GameManager.Instance.levelManager.GetClosestGridFromPosition(startWorldPos);
@@ -60,7 +61,7 @@ public class LevelPathfinding
             foreach (LevelGridNode neighbourNode in _GenerateNeighbourList(currentNode))
             {
                 if (m_closedList.Contains(neighbourNode)) continue;
-                if (!neighbourNode.CheckIsWalkable()) // ini tuh kalo ada entity di tujuan bakalan false
+                if (neighbourNode.isStaticNode) //|| !neighbourNode.CheckListEntityIsPassable()) // ini tuh kalo ada entity di tujuan bakalan false
                 {
                     m_closedList.Add(neighbourNode);
                     continue;

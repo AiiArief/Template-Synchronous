@@ -128,6 +128,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5065486701959673322, guid: 461ac25975a919743a81e862cbd9d663,
+        type: 3}
+      propertyPath: m_levelGridNodeScriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 29d707184254a7e429975c4c4dee057f,
+        type: 2}
     - target: {fileID: 7620583900310471670, guid: 461ac25975a919743a81e862cbd9d663,
         type: 3}
       propertyPath: m_Name

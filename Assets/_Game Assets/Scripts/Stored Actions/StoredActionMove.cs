@@ -16,13 +16,14 @@ public class StoredActionMove : StoredAction
         };
     }
 
-    public StoredActionMove(EntityCharacter entity, Vector3 direction, float range = 1)
+    public StoredActionMove(EntityCharacter entity, Vector3 direction, bool isWorldDir, float range = 1)
     {
         Transform transform = entity.transform;
         LevelManager levelManager = GameManager.Instance.levelManager;
         LevelGridNode currentNode = entity.currentNode;
 
-        Vector3 localTarget = transform.right * direction.x + transform.forward * direction.z;
+        Vector3 localTarget = ((isWorldDir) ? Vector3.right : transform.right) * direction.x + 
+                              ((isWorldDir) ? Vector3.forward : transform.forward) * direction.z;
         float moveSpeed = 1.0f / GameManager.Instance.phaseManager.processInput.minimumTimeBeforeNextPhase;
         float gravitySpeed = _CalcGravitySpeed(entity.gravityPerTurn);
         
@@ -42,7 +43,7 @@ public class StoredActionMove : StoredAction
             if (tempGridNode == null)
                 break;
 
-            if (!tempGridNode.CheckIsWalkable())
+            if (tempGridNode.isStaticNode || !tempGridNode.CheckListEntityIsPassable())
                 break;
 
             currentNode = tempGridNode;
@@ -59,7 +60,7 @@ public class StoredActionMove : StoredAction
             }
             else
             {
-                transform.position = new Vector3(target.x, entity.transform.position.y, target.z); // ubah jadi cuma x z aja kah?
+                transform.position = new Vector3(target.x, entity.transform.position.y, target.z); 
                 actionHasDone = true;
             }
         };

@@ -60,7 +60,7 @@ public class EntityCharacterPlayer : EntityCharacter
             Vector3 moveDir = (Mathf.Abs(_FCInput(moveH) + _FCInput(moveV)) != 1.0f) ? new Vector3(0.0f, 0.0f, _FCInput(moveV)) : new Vector3(_FCInput(moveH), 0.0f, _FCInput(moveV));
 
             storedActions.Add(new StoredActionTurn(this, m_playerCameraLook.currentCameraRot));
-            storedActions.Add(new StoredActionMove(this, moveDir, moveRange));
+            storedActions.Add(new StoredActionMove(this, moveDir, false, moveRange));
             storedActions.Add(new StoredActionCameraLook(this, m_playerCameraLook));
             storedActions.Add(new StoredActionDialogue(m_playerUI.HUDDialogue));
             return;

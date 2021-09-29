@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class LevelGridNode
 {
-    [HideInInspector] public LevelGrid parentGrid;
+    public LevelGrid parentGrid { get; private set; }
 
     [SerializeField] Vector2 m_gridPos;
     public Vector2 gridPos { get { return m_gridPos; } }
@@ -22,6 +22,17 @@ public class LevelGridNode
     [HideInInspector] public int fCost;
     [HideInInspector] public LevelGridNode cameFromNode;
 
+    public LevelGridNode(LevelGridNode scriptableNode = null, LevelGrid parentGrid = null)
+    {
+        if(scriptableNode != null)
+        {
+            this.parentGrid = parentGrid;
+            m_gridPos = scriptableNode.m_gridPos;
+            m_realWorldPos = scriptableNode.m_realWorldPos;
+            m_isStaticNode = scriptableNode.m_isStaticNode;
+        }
+    }
+
     public void EditorGenerateGridNode(Vector2 gridPos, Vector3 realWorldPos)
     {
         m_gridPos = gridPos;
@@ -29,14 +40,11 @@ public class LevelGridNode
         _GenerateIsStaticNode();
     }
 
-    public bool CheckIsWalkable()
+    public bool CheckListEntityIsPassable()
     {
-        if (isStaticNode)
-            return false;
-
         foreach (Entity entity in entityListOnThisNode)
         {
-            if (entity.gameObject.activeSelf && entity.GetComponent<TagEntityUnpassable>())
+            if (entity.isUpdateAble && entity.GetComponent<TagEntityUnpassable>())
                 return false;
         }
 

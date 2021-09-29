@@ -39,7 +39,6 @@ public class LevelGrid : MonoBehaviour
 
     public void SetupGridOnLevelStart()
     {
-        // masukin ke grid node
         startPos = _CalculateStartPos();
         gridNodes = new LevelGridNode[(int)size.x, (int)size.y];
 
@@ -48,8 +47,7 @@ public class LevelGrid : MonoBehaviour
         {
             for(int j=0; j<size.y; j++)
             {
-                gridNodes[i, j] = m_levelGridNodeScriptableObject.levelGridNodes[index];
-                gridNodes[i, j].parentGrid = this;
+                gridNodes[i, j] = new LevelGridNode(m_levelGridNodeScriptableObject.levelGridNodes[index], this);
                 index++;
             }
         }

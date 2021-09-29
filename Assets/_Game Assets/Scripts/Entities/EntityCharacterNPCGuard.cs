@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class EntityCharacterNPCGuard : EntityCharacterNPC
 {
-    Vector3 m_guardedArea;
+    Vector3 m_guardedArea; 
+    bool m_guardedAreaHasBeenSetup = false;
 
     public override void SetupWaitInput()
     {
         base.SetupWaitInput();
     
-        if(m_guardedArea == null)
+        if(!m_guardedAreaHasBeenSetup)
+        {
+            m_guardedAreaHasBeenSetup = true;
             m_guardedArea = transform.position;
+        }
     }
 
     public override void WaitInput()
@@ -42,6 +46,7 @@ public class EntityCharacterNPCGuard : EntityCharacterNPC
         return Vector3.Distance(transform.position, point) < (isUnpassable ? 1.1f : 0.1f);
     }
 
+    // kalo pathfindingnya masih sama gausah find path
     private void _MoveToPointEntity(Vector3 point)
     {
         LevelPathfinding pathfinding = new LevelPathfinding();
@@ -52,11 +57,12 @@ public class EntityCharacterNPCGuard : EntityCharacterNPC
             return;
         }
 
-        LevelGridNode nextNode = nodes[1]; // kalo pointnya masih sama kayak dulu ga usah find path
+        LevelGridNode nextNode = nodes[1];
+
+        float angle = Mathf.Atan2(nextNode.realWorldPos.x - transform.position.x, nextNode.realWorldPos.z - transform.position.z) * Mathf.Rad2Deg;
+        storedActions.Add(new StoredActionTurn(this, angle, false));
+
         Vector3 dir = (nextNode.realWorldPos - transform.position).normalized;
-        storedActions.Add(new StoredActionMove(this, dir));
-        
-        //float angle = Mathf.Atan2(nextNode.realWorldPos.x - transform.position.x, nextNode.realWorldPos.z - transform.position.z) * Mathf.Rad2Deg;
-        //storedActions.Add(new StoredActionTurn(this, angle, false));        
+        storedActions.Add(new StoredActionMove(this, dir, true));
     }
 }
