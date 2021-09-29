@@ -53,7 +53,6 @@ public class EntityManagerPlayer : EntityManager
         _SetupAllPlayersCamera(GetPlayerPlayableList());
     }
 
-    // todo : scale ui nya juga
     private void _SetupAllPlayersCamera(List<EntityCharacterPlayer> playablePlayers)
     {
         int playerCount = playablePlayers.Count;
